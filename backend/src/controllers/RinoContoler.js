@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Rino = require('../models/Dbrino');
 const parseStringAsArray =require('../utils/parseStringAsArray');
+const { findConnections, sendMessage } = require('../websocket');
 
 module.exports = {
     async index(request, response){
@@ -32,6 +33,12 @@ module.exports = {
                 techs: techsArray,
                 location,
             })
+
+            const sendSocketMessageTo = findConnections(
+                { latitude, longitude },
+                techsArray,
+            )
+            sendMessage(sendSocketMessageTo, 'new-dev', rino)
         }
         return response.json(rino);
     }
